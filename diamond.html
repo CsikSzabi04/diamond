@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gyémántok</title>
+    <style>
+        body{background-color:blanchedalmond; text-align: center;}
+        #main{margin: 0 auto; border: grey 5px solid; background-color: white; width: 660px; height: 528px; font-size: 0pt; margin-bottom: 10px; padding: 10px;}
+        #main img{border: 1px solid white;}
+        #main img:hover{border: 1px solid black;}
+        .smth{font-size: 20pt; font-weight: bold; font-family: Comic Sans MS; }
+    </style>
+    <script>
+
+        let t = [];
+        let pont = 0;
+
+        function start(){
+            let html = "";
+            for(let o=0; o<8; o++){
+                t[o] = [];
+                for(let i=0; i<10; i++){
+                    t[o][i] = 0;
+                    html += "<img id='k"+o+i+"' src='left.png' onclick='katt("+o+","+i+");'>";
+                }
+            }
+            document.getElementById("main").innerHTML = html;
+            gondol();
+        }
+
+        let kepek = ["left", "right", "up", "down", "diamond"];
+        function gondol(){
+            for(let o=0; o<8; o++){
+                for(let i=0; i<10; i++){
+                    let rand = Math.floor(Math.random()*4);
+                    setKep(o,i,rand);
+                }
+            }
+            let o,i;
+            o=Math.floor(Math.random()*4);
+            i = Math.floor(Math.random()*5);
+            setKep(o,i,4)
+            
+            o=Math.floor(Math.random()*4+4);
+            i = Math.floor(Math.random()*5+5);
+            setKep(o,i,4)
+        }
+
+        function setKep(o,i,s){
+            t[o][i] = s;
+            document.getElementById("k"+o+i).src = kepek[s] + ".png";
+        }
+
+        function katt(o, i){
+            if(t[o][i] == 0){       // left.png
+                let cs = t[o][0];
+                for(let i=0; i<9; i++) setKep(o, i, t[o][i+1]);
+                setKep(o, 9, cs);
+            } else if(t[o][i] == 1){       // right.png
+                    let cs = t[o][9];
+                    for(let i=9; i>0; i--) setKep(o, i, t[o][i-1]);
+                    setKep(o, 0, cs);  
+            }else if(t[o][i] == 2){       // up.png
+                    let cs = t[0][i];
+                    for(let o=0; o<7; o++) setKep(o, i, t[o+1][i]);
+                    setKep(7, i, cs); 
+            }else if(t[o][i] == 3){       // up.png
+                    let cs = t[7][i];
+                    for(let o=7; o>0; o--) setKep(o, i, t[o-1][i]);
+                    setKep(0, i, cs); 
+             } else if(t[o][i] == 4 && pair){
+                 pont+=2;
+                 document.getElementById("pont").innerHTML += pont;
+                 gondol();
+             }   
+             check();
+        }
+
+        function check(){
+            let pair = false;
+            for(let s=0; s<8;s++)for(let o=0;o<10;o++){
+                if(t[s][o] == 4){
+                    if(o<9 && t[s][o+1] == 4) {pair = true; green(s,o); green(s,o+1)}
+                    if(s<7 && t[s+1][o] == 4) {pair = true; green(s,o); green(s+1,o)}
+                }
+            }
+        }
+
+        function green(s,o){
+            document.getElementById("k"+o+i).style = "background-color: lightgreen;";
+        }
+
+        function green(){
+            document.getElementById("k"+o+i).style = "background-color: white;";
+        }
+    </script>
+</head>
+<body onload="start();">
+    <div id="main"></div>
+   <span class="smth">Pontszám:<span id="pont">0</span></span> 
+</body>
+</html>
